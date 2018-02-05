@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>io.xocore</groupId>
+  <artifactId>xoc-utils-java</artifactId>
+  <version>1.0</version>
+  <packaging>jar</packaging>
+
+  <name>xoc-utils-java</name>
+  <description>The utils library for all XOCore JAVA projects</description>
+  <url>https://github.com/newellxo/xoc-utils-java</url>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Zhengwei Li</name>
+      <email>zhengwei.li@newellco.com</email>
+      <organization>XO By Newell Brands</organization>
+      <organizationUrl>https://xo.team</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git://github.com/newellxo/xoc-utils-java.git</connection>
+    <developerConnection>scm:git:ssh://github.com:newellxo/xoc-utils-java.git</developerConnection>
+    <url>https://github.com/newellxo/xoc-utils-java/tree/master</url>
+  </scm>
+
+</project>
