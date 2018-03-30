@@ -10,11 +10,12 @@ import java.util.Map;
 public class KafkaUtils {
   /**
    * Generates Kafka Message.
-   * @param sourceMessageValue consumes from kafka, null provided if it's origin
+   * @param sourceMessageValue  consumes from kafka, null provided if it's origin
    * @param currentMessageValue payload to push to kafka
-   * @param originId entity id if sourceMap is null
-   * @param serviceName service name
-   * @param topicName topic name
+   * @param originId            entity id if sourceMap is null
+   * @param serviceName         service name
+   * @param topicName           topic name
+   * @param targetTopic         next topic will be
    * @return Map message
    * @throws Exception throws exception when occurs
    */
@@ -23,10 +24,11 @@ public class KafkaUtils {
       Map<String, Object> currentMessageValue,
       String originId,
       String serviceName,
-      String topicName) throws Exception {
+      String topicName,
+      String targetTopic) throws Exception {
     KafkaPath path = setKafkaMessagePath(
         sourceMessageValue,
-        originId, serviceName, topicName
+        originId, serviceName, topicName, targetTopic
     );
     return createKafkaMessageWithPathAndPayload(path, currentMessageValue);
   }
@@ -35,12 +37,13 @@ public class KafkaUtils {
       Map<String, Object> sourceMessageValue,
       String originId,
       String serviceName,
-      String topicName) throws Exception {
+      String topicName,
+      String targetTopic) throws Exception {
     KafkaPath path;
     if (sourceMessageValue != null) {
-      path = getPathFromSourceMessage(sourceMessageValue);
+      path = getPathFromSourceMessage(sourceMessageValue, targetTopic);
     } else {
-      path = createPath(originId);
+      path = createPath(originId, targetTopic);
     }
     return addNodeToPath(path, serviceName, topicName);
   }
@@ -50,17 +53,19 @@ public class KafkaUtils {
     return path.addNode(node);
   }
 
-  private static KafkaPath getPathFromSourceMessage(Map<String, Object> sourceMessage) {
+  private static KafkaPath getPathFromSourceMessage(Map<String, Object> sourceMessage, String targetTopic) {
     Gson gson = new Gson();
     JsonElement jsonElement = gson.toJsonTree(sourceMessage);
-    return gson.fromJson(jsonElement, KafkaPath.class);
+    KafkaPath kafkaPath = gson.fromJson(jsonElement, KafkaPath.class);
+    kafkaPath.setTargetTopic(targetTopic);
+    return kafkaPath;
   }
 
-  private static KafkaPath createPath(String originId) throws Exception {
+  private static KafkaPath createPath(String originId, String targetTopic) throws Exception {
     if (originId == null) {
       throw new Exception("originId is required when sourceMessage not available.");
     }
-    return new KafkaPath(originId, new ArrayList<>());
+    return new KafkaPath(originId, new ArrayList<>(), targetTopic);
   }
 
   private static Map<String, Object> createKafkaMessageWithPathAndPayload(
@@ -72,10 +77,17 @@ public class KafkaUtils {
   private static class KafkaPath {
     private String originId;
     private List<Node> nodes;
+    private String targetTopic;
 
     public KafkaPath(String originId, List<Node> nodes) {
       this.originId = originId;
       this.nodes = nodes;
+    }
+
+    public KafkaPath(String originId, List<Node> nodes, String targetTopic) {
+      this.originId = originId;
+      this.nodes = nodes;
+      this.targetTopic = targetTopic;
     }
 
     public String getOriginId() {
@@ -92,6 +104,14 @@ public class KafkaUtils {
 
     public void setNodes(List<Node> nodes) {
       this.nodes = nodes;
+    }
+
+    public String getTargetTopic() {
+      return targetTopic;
+    }
+
+    public void setTargetTopic(String targetTopic) {
+      this.targetTopic = targetTopic;
     }
 
     public KafkaPath addNode(Node node) {
