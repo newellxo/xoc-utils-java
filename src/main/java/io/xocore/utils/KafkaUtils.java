@@ -33,6 +33,29 @@ public class KafkaUtils {
     return createKafkaMessageWithPathAndPayload(path, currentMessageValue);
   }
 
+  /**
+   * Generates Kafka Message.
+   * @param sourceMessageValue  consumes from kafka, null provided if it's origin
+   * @param currentMessageValue payload to push to kafka
+   * @param originId            entity id if sourceMap is null
+   * @param serviceName         service name
+   * @param topicName           topic name
+   * @return Map message
+   * @throws Exception throws exception when occurs
+   */
+  public static Map<String, Object> generateKafkaMessage(
+      Map<String, Object> sourceMessageValue,
+      Map<String, Object> currentMessageValue,
+      String originId,
+      String serviceName,
+      String topicName) throws Exception {
+    KafkaPath path = setKafkaMessagePath(
+        sourceMessageValue,
+        originId, serviceName, topicName, null
+    );
+    return createKafkaMessageWithPathAndPayload(path, currentMessageValue);
+  }
+
   private static KafkaPath setKafkaMessagePath(
       Map<String, Object> sourceMessageValue,
       String originId,
