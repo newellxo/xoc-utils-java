@@ -3,9 +3,12 @@ package io.xocore.utils;
 import avro.shaded.com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class KafkaUtils {
   /**
@@ -94,6 +97,10 @@ public class KafkaUtils {
   private static Map<String, Object> createKafkaMessageWithPathAndPayload(
       KafkaPath path,
       Map<String, Object> currentMessageValue) {
+    SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    final TimeZone utc = TimeZone.getTimeZone("UTC");
+    dateFormatter.setTimeZone(utc);
+    currentMessageValue.put("createdAt", dateFormatter.format(new Date()));
     return ImmutableMap.of("path", path, "data", currentMessageValue);
   }
 
