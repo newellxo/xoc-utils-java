@@ -1,5 +1,5 @@
 group = "io.xocore"
-version = "1.0.3"
+version = "1.0.5"
 
 apply plugin: 'java'
 apply plugin: 'signing'
@@ -16,6 +16,10 @@ repositories {
 dependencies {
     compile("org.apache.avro:avro:1.8.2")
     compile('com.google.code.gson:gson:2.7')
+    compile("org.apache.kafka:kafka_2.12:1.0.0") {
+        exclude group: 'log4j', module: 'log4j'
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+    }
     testCompile 'junit:junit:4.+'
 }
 
@@ -45,7 +49,7 @@ publishing {
             customizePom(pom)
             groupId 'io.xocore'
             artifactId 'xoc-utils-java'
-            version '1.0.3'
+            version '1.0.5'
 
             from components.java
 
@@ -136,6 +140,9 @@ def customizePom(pom) {
             developers {
                 developer {
                     name 'Zhengwei Li'
+                }
+                developer {
+                    name 'Chuanhui Zhang'
                 }
             }
         }
