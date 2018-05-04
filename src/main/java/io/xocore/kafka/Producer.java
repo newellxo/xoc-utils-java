@@ -26,6 +26,13 @@ public class Producer {
     private String serverOrigin;
     private String serviceName;
 
+    /**
+     * Get singleton instance of producer with server origin, service name and time of retires
+     * @param serverOrigin remote server origin
+     * @param produceRetries time of retries if produce fails
+     * @param serviceName local service name
+     * @return return Producer singleton instance
+     */
     public static Producer getInstance(String serverOrigin, int produceRetries, String serviceName) {
         if (instance == null) {
             instance = new Producer(serverOrigin, serviceName, produceRetries);
@@ -33,6 +40,12 @@ public class Producer {
         return instance;
     }
 
+    /**
+     *  Get singleton instance of producer with server origin and service name
+     * @param serverOrigin remote server origin
+     * @param serviceName local service name
+     * @return return Producer singleton instance
+     */
     public static Producer getInstance(String serverOrigin, String serviceName) {
         if (instance == null) {
             instance = new Producer(serverOrigin, serviceName);
@@ -114,6 +127,7 @@ public class Producer {
      * @param  data core data to push
      * @param  topic the topic message from
      * @param  targetTopic the topic to push message to
+     * @throws Exception throws exception when occurs
      */
     public void produceMessage (
             Map<String, Object> sourceMessage,

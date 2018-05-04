@@ -38,6 +38,13 @@ public class Consumer {
 
     private HashMap<String, ConsumerHandler> consumerHandlers = new HashMap<>();
 
+    /**
+     * Get a singleton consumer instance with server origin, group ID and local service name.
+     * @param serverOrigin remote server origin
+     * @param groupId consumer group ID
+     * @param serviceName local service name
+     * @return return Consumer singleton instance
+     */
     public static Consumer getInstance(
             String serverOrigin,
             String groupId,
@@ -53,6 +60,18 @@ public class Consumer {
         return instance;
     }
 
+    /**
+     * Get a singleton consumer instance with configurations.
+     * @param serverOrigin remote server origin
+     * @param groupId consumer group ID
+     * @param autoCommitEnable if enable auto commit
+     * @param autoCommitInterval auto commit interval
+     * @param pollTimeout time period to poll message from server
+     * @param dealLetterTopic dead letter topic
+     * @param serviceName local service name
+     * @param consumerRetries time of retires if consume fails
+     * @return return Consumer singleton instance
+     */
     public static Consumer getInstance(
             String serverOrigin,
             String groupId,
@@ -188,6 +207,7 @@ public class Consumer {
 
     /**
      * Starts to consume Kafka message, throws exceptions if no handler added.
+     * @throws Exception throws exception when occurs
      */
     public void consume() throws Exception {
         if (this.consumerHandlers.isEmpty()) {
