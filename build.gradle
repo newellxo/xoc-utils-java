@@ -16,6 +16,10 @@ repositories {
 dependencies {
     compile("org.apache.avro:avro:1.8.2")
     compile('com.google.code.gson:gson:2.7')
+    compile("org.apache.kafka:kafka_2.12:1.0.0") {
+        exclude group: 'log4j', module: 'log4j'
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+    }
     testCompile 'junit:junit:4.+'
 }
 
