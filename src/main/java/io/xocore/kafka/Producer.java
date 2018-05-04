@@ -97,7 +97,7 @@ public class Producer {
      * and pushes the message to Kafka server.
      *
      * @param  topic the topic the message will be pushed to
-     * @param  data message payload in string formate to push
+     * @param  data message payload in string format to push
      */
     public void produce(String topic, String data) {
         this.produce(topic, data, this.callback);
