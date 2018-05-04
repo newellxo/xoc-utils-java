@@ -211,8 +211,8 @@ public class Consumer {
      */
     public void consume() throws Exception {
         if (this.consumerHandlers.isEmpty()) {
-            logger.error("There's no registered topics.");
-            throw new Exception("There's no registered topics.");
+            logger.error("There are registered topics.");
+            throw new Exception("There are no registered topics.");
         }
 
         List<String> topicList = new ArrayList<>(this.consumerHandlers.keySet());
