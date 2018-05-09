@@ -20,6 +20,7 @@ dependencies {
         exclude group: 'log4j', module: 'log4j'
         exclude group: 'org.slf4j', module: 'slf4j-log4j12'
     }
+    compile group: 'org.apache.kafka', name: 'kafka-streams', version: '1.0.0'
     testCompile 'junit:junit:4.+'
 }
 
