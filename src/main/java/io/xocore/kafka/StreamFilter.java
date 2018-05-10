@@ -1,5 +1,5 @@
 package io.xocore.kafka;
 
-public interface ConsumerFilter {
+public interface StreamFilter {
     boolean run(Object key, Object value);
 }
