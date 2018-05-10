@@ -36,7 +36,7 @@ public class Consumer {
 
     private KafkaConsumer<String, String> kafkaConsumer;
 
-    private HashMap<String, StreamHandler> consumerHandlers = new HashMap<>();
+    private HashMap<String, ConsumerHandler> consumerHandlers = new HashMap<>();
 
     /**
      * Get a singleton consumer instance with server origin, group ID and local service name.
@@ -201,7 +201,7 @@ public class Consumer {
      * @param topic the topic of the message to handle
      * @param consumerhandler handler instance that have to implement the interface.
      */
-    public void addConsumerHandler(String topic, StreamHandler consumerhandler) {
+    public void addConsumerHandler(String topic, ConsumerHandler consumerhandler) {
         consumerHandlers.put(topic, consumerhandler);
     }
 
