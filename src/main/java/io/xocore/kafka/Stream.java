@@ -58,13 +58,13 @@ public class Stream {
             for (ConsumerChain consumerChain : consumerChains) {
                 KStream filteredStream = kStream;
                 if (consumerChain.streamFilter != null) {
-                    filteredStream = kStream.filter((key, value) -> consumerChain.streamFilter.run(key, value));
+                    filteredStream = kStream.filter((key, value) -> consumerChain.streamFilter.run(topic, key, value));
                 }
 
                 if (consumerChain.topicToProduce == null) {
-                    filteredStream.foreach((key, value) -> consumerChain.streamHandler.run((String)value));
+                    filteredStream.foreach((key, value) -> consumerChain.streamHandler.run(topic, (String)value));
                 } else {
-                    filteredStream.mapValues(value -> consumerChain.streamHandler.runAndReturn((String)value))
+                    filteredStream.mapValues(value -> consumerChain.streamHandler.runAndReturn(topic, (String)value))
                             .to(consumerChain.topicToProduce);
                 }
             }
