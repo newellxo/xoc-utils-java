@@ -9,7 +9,7 @@ public interface StreamHandler {
      * @param topic Topic to be consumed
      * @param message Kafka message payload in String
      */
-    void run (String topic, String message);
+    void run(String topic, String message);
 
     /**
      * Entry to process the message
@@ -17,5 +17,5 @@ public interface StreamHandler {
      * @param message Kafka message payload in String
      * @return Return Kafka message to produce to next topic
      */
-    String runAndReturn (String topic, String message);
+    String runAndReturn(String topic, String message);
 }
