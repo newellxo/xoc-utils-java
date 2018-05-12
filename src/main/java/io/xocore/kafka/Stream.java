@@ -23,6 +23,12 @@ public class Stream {
 
     private KafkaStreams streams;
 
+    /**
+     * Singleton instance of stream
+     * @param serverOrigin Kafka server origin
+     * @param groupId Kafka consumer group id
+     * @return Stream singleton instance
+     */
     public static Stream getInstance(
             String serverOrigin,
             String groupId
@@ -33,7 +39,7 @@ public class Stream {
         return instance;
     }
 
-    public Stream(
+    private Stream(
             String serverOrigin,
             String groupId
     ) {
@@ -58,13 +64,13 @@ public class Stream {
             for (ConsumerChain consumerChain : consumerChains) {
                 KStream filteredStream = kStream;
                 if (consumerChain.streamFilter != null) {
-                    filteredStream = kStream.filter((key, value) -> consumerChain.streamFilter.run(key, value));
+                    filteredStream = kStream.filter((key, value) -> consumerChain.streamFilter.run(topic, key, value));
                 }
 
                 if (consumerChain.topicToProduce == null) {
-                    filteredStream.foreach((key, value) -> consumerChain.streamHandler.run((String)value));
+                    filteredStream.foreach((key, value) -> consumerChain.streamHandler.run(topic, (String)value));
                 } else {
-                    filteredStream.mapValues(value -> consumerChain.streamHandler.runAndReturn((String)value))
+                    filteredStream.mapValues(value -> consumerChain.streamHandler.runAndReturn(topic, (String)value))
                             .to(consumerChain.topicToProduce);
                 }
             }
@@ -74,8 +80,10 @@ public class Stream {
         return new KafkaStreams(topology, props);
     }
 
+    /**
+     * Start streams
+     */
     public void run() {
-
         streams = initStreams();
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -106,42 +114,66 @@ public class Stream {
         }
     }
 
+    /**
+     * Add a stream chain with topic to be consumed, handler and topic to produced.
+     * @param topicToConsume Kafka topic to be consumed
+     * @param streamHandler Handler to consume the topic message
+     * @param topicToProduce Kafka topic to produce to after handler
+     */
     public void add(String topicToConsume, StreamHandler streamHandler, String topicToProduce) {
         saveToStreamChains(topicToConsume, new ConsumerChain(streamHandler, topicToProduce));
     }
 
+    /**
+     * Add a stream chain with topic to be consumed, handler, topic to produced and message filter.
+     * @param topicToConsume Kafka topic to be consumed
+     * @param streamHandler Handler to consume the topic message
+     * @param topicToProduce Kafka topic to produce to after handler
+     * @param streamFilter Filter the message before going to handler
+     */
     public void add(String topicToConsume, StreamHandler streamHandler, String topicToProduce, StreamFilter streamFilter) {
         saveToStreamChains(topicToConsume, new ConsumerChain(streamHandler, topicToProduce, streamFilter));
     }
 
+    /**
+     * Add a stream chain with topic to be consumed and handler.
+     * @param topicToConsume Kafka topic to be consumed
+     * @param streamHandler Handler to consume the topic message
+     */
     public void add(String topicToConsume, StreamHandler streamHandler) {
         saveToStreamChains(topicToConsume, new ConsumerChain(streamHandler));
     }
 
+    /**
+     * Add a stream chain with topic to be consumed, handler and message filter.
+     * @param topicToConsume Kafka topic to be consumed
+     * @param streamHandler Handler to consume the topic message
+     * @param streamFilter Filter the message before going to handler
+     */
     public void add(String topicToConsume, StreamHandler streamHandler, StreamFilter streamFilter) {
         saveToStreamChains(topicToConsume, new ConsumerChain(streamHandler, streamFilter));
     }
 
-    public class ConsumerChain {
+    private class ConsumerChain {
         private StreamHandler streamHandler;
         private StreamFilter streamFilter;
         private String topicToProduce = null;
 
-        public ConsumerChain(StreamHandler streamHandler) {
+        private ConsumerChain(StreamHandler streamHandler) {
             this.streamHandler = streamHandler;
         }
 
-        public ConsumerChain(StreamHandler streamHandler, StreamFilter streamFilter) {
+        private ConsumerChain(StreamHandler streamHandler, StreamFilter streamFilter) {
             this.streamHandler = streamHandler;
             this.streamFilter = streamFilter;
         }
 
-        public ConsumerChain(StreamHandler streamHandler, String topicToProduce) {
+        private ConsumerChain(StreamHandler streamHandler, String topicToProduce) {
             this.streamHandler = streamHandler;
             this.topicToProduce = topicToProduce;
         }
 
-        public ConsumerChain(
+        private ConsumerChain(
                 StreamHandler streamHandler,
                 String topicToProduce,
                 StreamFilter streamFilter
