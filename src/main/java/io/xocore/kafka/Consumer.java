@@ -25,7 +25,7 @@ public class Consumer {
     private  String groupId;
     private final static String keyDeserializer = "org.apache.kafka.common.serialization.StringDeserializer";
     private final static String valueDeserializer = "org.apache.kafka.common.serialization.StringDeserializer";
-    private String dealLetterTopic = "xoc.dead-letter-queue";
+    private String deadLetterTopic = "xoc.dead-letter-queue";
     private int pollTimeout = 3000;
     private boolean autoCommitEnable = true;
     private int autoCommitInterval = 1000;
@@ -67,7 +67,7 @@ public class Consumer {
      * @param autoCommitEnable if enable auto commit
      * @param autoCommitInterval auto commit interval
      * @param pollTimeout time period to poll message from server
-     * @param dealLetterTopic dead letter topic
+     * @param deadLetterTopic dead letter topic
      * @param serviceName local service name
      * @param consumerRetries time of retires if consume fails
      * @return return Consumer singleton instance
@@ -78,7 +78,7 @@ public class Consumer {
             boolean autoCommitEnable,
             int autoCommitInterval,
             int pollTimeout,
-            String dealLetterTopic,
+            String deadLetterTopic,
             String serviceName,
             int consumerRetries
     ) {
@@ -89,7 +89,7 @@ public class Consumer {
                     autoCommitEnable,
                     autoCommitInterval,
                     pollTimeout,
-                    dealLetterTopic,
+                    deadLetterTopic,
                     serviceName,
                     consumerRetries);
         }
@@ -113,7 +113,7 @@ public class Consumer {
             boolean autoCommitEnable,
             int autoCommitInterval,
             int pollTimeout,
-            String dealLetterTopic,
+            String deadLetterTopic,
             String serviceName,
             int consumerRetries
     ) {
@@ -122,7 +122,7 @@ public class Consumer {
         this.autoCommitEnable = autoCommitEnable;
         this.autoCommitInterval = autoCommitInterval;
         this.pollTimeout = pollTimeout;
-        this.dealLetterTopic = dealLetterTopic;
+        this.deadLetterTopic = deadLetterTopic;
         this.serviceName = serviceName;
         this.consumerRetries = consumerRetries;
         this.producer = Producer.getInstance(serverOrigin, serviceName);
@@ -182,7 +182,7 @@ public class Consumer {
         if (recordNode.has("retry")) { // if it is retry, add to errors
             ArrayNode errors = (ArrayNode) recordNode.get("retry").get("errors");
             if (errors.size() > consumerRetries) {
-                targetTopic = dealLetterTopic;
+                targetTopic = deadLetterTopic;
                 this.producer.produce(targetTopic, recordNode.toString());
             } else {
                 errors.add(createErrorNode(ex));
@@ -228,7 +228,7 @@ public class Consumer {
                 try {
                     recordNode = mapper.readTree(record.value());
                 } catch (IOException ex) {
-                    handleConsumerException(ex, record, this.dealLetterTopic);
+                    handleConsumerException(ex, record, this.deadLetterTopic);
                     continue;
                 }
                 try {
