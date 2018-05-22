@@ -7,15 +7,11 @@ import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Properties;
 
 public class Producer {
-
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static Producer instance = null;
     private KafkaProducer kafkaProducer;
@@ -69,10 +65,10 @@ public class Producer {
             if(e != null)
                 e.printStackTrace();
             if (metadata == null) {
-                logger.info("meta data is null");
+                System.out.println("meta data is null");
                 return;
             }
-            logger.info(
+            System.out.println(
                     "The record was sent to topic: " + metadata.topic()
                             + " at partition: " + metadata.partition());
         }
