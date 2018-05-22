@@ -22,6 +22,7 @@ dependencies {
     }
     compile group: 'org.apache.kafka', name: 'kafka-streams', version: '1.0.0'
     testCompile 'junit:junit:4.+'
+    testCompile group: 'org.apache.curator', name: 'curator-test', version: '4.0.1'
 }
 
 task sourceJar(type: Jar) {
