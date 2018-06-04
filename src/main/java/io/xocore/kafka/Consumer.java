@@ -20,6 +20,8 @@ public class Consumer {
     private ObjectMapper mapper = new ObjectMapper();
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
+    private boolean stopped = false;
+
     private String serviceName;
     private String serverOrigin;
     private  String groupId;
@@ -205,6 +207,10 @@ public class Consumer {
         consumerHandlers.put(topic, consumerhandler);
     }
 
+    public void stop() {
+        this.stopped = true;
+    }
+
     /**
      * Starts to consume Kafka message, throws exceptions if no handler added.
      * @throws Exception throws exception when occurs
@@ -218,7 +224,7 @@ public class Consumer {
         List<String> topicList = new ArrayList<>(this.consumerHandlers.keySet());
         this.getKafkaConsumer().subscribe(topicList);
 
-        while (true) {
+        while (true && !stopped) {
             ConsumerRecords<String, String> records = this.getKafkaConsumer().poll(pollTimeout);
             for (ConsumerRecord<String, String> record : records) {
                 logger.info("topic = {}, offset = {}, key = {}, value = {}",

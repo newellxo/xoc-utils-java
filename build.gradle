@@ -1,5 +1,5 @@
 group = "io.xocore"
-version = "1.0.7"
+version = "1.0.8"
 
 apply plugin: 'java'
 apply plugin: 'signing'
@@ -21,7 +21,7 @@ dependencies {
         exclude group: 'org.slf4j', module: 'slf4j-log4j12'
     }
     compile group: 'org.apache.kafka', name: 'kafka-streams', version: '1.0.0'
-    testCompile 'junit:junit:4.+'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile group: 'org.apache.curator', name: 'curator-test', version: '4.0.1'
 }
 
@@ -51,7 +51,7 @@ publishing {
             customizePom(pom)
             groupId 'io.xocore'
             artifactId 'xoc-utils-java'
-            version '1.0.7'
+            version '1.0.8'
 
             from components.java
 

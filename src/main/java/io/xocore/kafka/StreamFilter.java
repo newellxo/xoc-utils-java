@@ -7,7 +7,7 @@ public interface StreamFilter {
     /**
      * Entry to filter the message
      * @param topic Topic to be consumed
-     * @param key
+     * @param key Kafka message key
      * @param value Kafka message
      * @return Boolean to decide if or not to process the message
      */
